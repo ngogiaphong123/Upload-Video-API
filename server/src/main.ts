@@ -8,6 +8,7 @@ import helmet from 'helmet';
 import userRoute from './modules/user/user.route';
 import authRoute from './modules/auth/auth.route';
 import deserializeUser from './middleware/deserializeUser';
+import videoRoute from './modules/videos/video.route';
 const app = express();
 //? Middle wares
 app.use(cookieParser());
@@ -20,12 +21,12 @@ app.use(helmet());
 app.use(deserializeUser);
 app.use('/api/users', userRoute);
 app.use('/api/auth', authRoute)
+app.use('/api/videos', videoRoute)
 const PORT = process.env.PORT || 3001
 const server = app.listen(PORT, async () => {
     await connectToDB();
     logger.info(`Listening on port ${PORT}`);
 })
-
 const signals = ["SIGTERM", "SIGINT"]
 
 function gracefulShutdown(signal: string) {

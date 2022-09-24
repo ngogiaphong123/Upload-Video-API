@@ -1,10 +1,10 @@
 import { Request, Response } from "express";
 import { StatusCodes } from "http-status-codes";
 import { UserModel } from "../user/user.model";
-import omit from '../../helpers/omit';
 import { findUserByEmail } from "../user/user.service";
 import { signJwt } from "./auth.utils";
 import { LoginBody } from "./auth.shema";
+import _ from "lodash";
 export async function loginHandler(req : Request<{},{},LoginBody>,res : Response) {
     const {email , password} = req.body;
     //? Find the user by email
@@ -13,7 +13,7 @@ export async function loginHandler(req : Request<{},{},LoginBody>,res : Response
     if(!user || !user.comparePassword(password)) {
         return res.status(StatusCodes.UNAUTHORIZED).send("Invalid email or password");
     }
-    const payload = omit(user.toJSON(),'password');
+    const payload = _.omit(user.toJSON(),["password","__v"]);
     console.log(payload);
     //? Sign a jwt
     const jwt = signJwt(payload);
